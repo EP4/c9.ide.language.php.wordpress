@@ -1,0 +1,21 @@
+{
+  "name": "phpcs.wpcs",
+  "description": "Displays warnings in the IDE with the help of PHP CodeSniffer configured with WordPress Coding Standards and PHPCompatibility rules.",
+  "version": "0.0.1",
+  "author": "EP4",
+  "contributors": [
+    {
+      "name": "Dave Lavoie",
+      "email": "dave.lavoie+c9@ep4.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EP4-Corporation/c9.ide.language.php.wordpress"
+  },
+  "plugins": {
+    "phpcs.wpcs": {}
+  },
+  "categories": ["miscellaneous"],
+  "licenses": ["GPLv3 or later"]
+}
