@@ -3,7 +3,7 @@ c9.ide.language.php.wordpress
 
 __Name__ : WordPress Coding Standards Linter for Cloud9 
 
-__Current Version__: 0.0.1 (alpha)
+__Current Version__: 0.0.2a
 
 __Author__ : [EP4](https://ep4.com)
 
@@ -73,3 +73,15 @@ Ressources
 * WordPress Coding Standards : [GitHub Repo](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards), [Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki) & [Whitelisting code which flags errors](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Whitelisting-code-which-flags-errors)
 * PHPCompatibility : [GitHub Repo](https://github.com/wimg/PHPCompatibility)
 * Cloud9 : [SDK](https://cloud9-sdk.readme.io/) & [API](https://apidoc.c9.io)
+
+Changelog
+---------
+
+### 0.0.2a - 2017-02-13
+
+* Updating WP Coding Standards with the latest release as of 2017-02-10.
+* Updading PHPCompabitity with the latest release as of 2017-02-06
+
+### 0.0.1 (alpha) - 2017-02-10
+
+Initial release.
