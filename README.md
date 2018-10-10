@@ -3,7 +3,7 @@ c9.ide.language.php.wordpress
 
 __Name__ : WordPress Coding Standards Linter for Cloud9 
 
-__Current Version__: 0.0.2a
+__Current Version__: 1.0.0 (2018-10-10)
 
 __Author__ : [EP4](https://ep4.com)
 
@@ -11,7 +11,7 @@ __Contributors__ : [Dave Lavoie](https://github.com/davelavoie)
 
 __License__ : GPLv3 or later
 
-Provides a linter in Cloud9 IDE for WordPress development using PHP CodeSniffer (PHPCS) based on WordPress Coding Standards (WPCS) and PHPCompatibility rules.
+Provides a linter in Cloud9 IDE for WordPress development using PHP CodeSniffer (PHPCS) based on WordPress Coding Standards (WPCS) and PHPCompatibility/PHPCompabitityWP rules.
 
 Installation
 ------------
@@ -69,18 +69,33 @@ Since there is no simple way to allow HTML in these tooltips, we use some custom
 Ressources
 ----------
 
-* PHP CodeSniffer : [GitHub repo](https://github.com/squizlabs/PHP_CodeSniffer) & [Wiki](https://github.com/squizlabs/PHP_CodeSniffer/wiki)
+* PHP CodeSniffer : [GitHub Repo](https://github.com/squizlabs/PHP_CodeSniffer), [Wiki](https://github.com/squizlabs/PHP_CodeSniffer/wiki) & [Analysis of Coding Conventions for WP](https://squizlabs.github.io/PHP_CodeSniffer/analysis/WordPress/WordPress/index.html)
 * WordPress Coding Standards : [GitHub Repo](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards), [Wiki](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki) & [Whitelisting code which flags errors](https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards/wiki/Whitelisting-code-which-flags-errors)
-* PHPCompatibility : [GitHub Repo](https://github.com/wimg/PHPCompatibility)
+* PHPCompatibility : [GitHub Repo](https://github.com/PHPCompatibility/PHPCompatibility)
+* PHPCompatibilityWP : [GitHub Repo](https://github.com/PHPCompatibility/PHPCompatibilityWP)
 * Cloud9 : [SDK](https://cloud9-sdk.readme.io/) & [API](https://apidoc.c9.io)
 
 Changelog
 ---------
 
+### 1.0.0 - 2018-10-10
+
+* Updating PHP_CodeSniffer library to version 3.3.2.
+* Updating WordPress Coding Standards to version 1.1.0.
+* Updading PHPCompabitity standards to version 9.0.0.
+* Adding PHPCompabitityWP 2.0.0 and PHPCompatibilityParagonie 1.0.0 standards.
+* Increasing the stdout max output from 200KB to 500KB.
+* Increasing the timeout from 5 to 10 seconds.
+* Moving the checkmark icon (✔) after the position in the tooltip.
+* Including license files for each coding standards.
+* Removing the CSS rule used for hiding the debug bar since the plugin can be used without activating the debug mode now.
+* Some code refactoring.
+* Updating the 'Installation' section of the docs.
+
 ### 0.0.2a - 2017-02-13
 
-* Updating WP Coding Standards with the latest release as of 2017-02-10.
-* Updading PHPCompabitity with the latest release as of 2017-02-06
+* Updating WordPress Coding Standards with the latest release as of 2017-02-10.
+* Updading PHPCompabitity standards with the latest release as of 2017-02-06
 
 ### 0.0.1 (alpha) - 2017-02-10
 

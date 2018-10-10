@@ -1,12 +1,12 @@
 {
   "name": "phpcs.wpcs",
   "description": "Displays warnings in the IDE with the help of PHP CodeSniffer configured with WordPress Coding Standards and PHPCompatibility rules.",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "author": "EP4",
   "contributors": [
     {
       "name": "Dave Lavoie",
-      "email": "dave.lavoie+c9@ep4.com"
+      "email": "dave.lavoie@ep4.com"
     }
   ],
   "repository": {

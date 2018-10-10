@@ -7,6 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\VIP;
+
+use WordPress\AbstractFunctionRestrictionsSniff;
+
 /**
  * Disallow Filesystem writes.
  *
@@ -17,8 +21,12 @@
  * @since   0.3.0
  * @since   0.11.0 Extends the WordPress_AbstractFunctionRestrictionsSniff instead of the
  *                 Generic_Sniffs_PHP_ForbiddenFunctionsSniff.
+ * @since   0.13.0 Class name changed: this class is now namespaced.
+ *
+ * @deprecated 1.0.0  This sniff has been deprecated.
+ *                    This file remains for now to prevent BC breaks.
  */
-class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends WordPress_AbstractFunctionRestrictionsSniff {
+class FileSystemWritesDisallowSniff extends AbstractFunctionRestrictionsSniff {
 
 	/**
 	 * If true, an error will be thrown; otherwise a warning.
@@ -28,14 +36,27 @@ class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends WordPress_Abstr
 	public $error = true;
 
 	/**
+	 * Keep track of whether the warnings have been thrown to prevent
+	 * the messages being thrown for every token triggering the sniff.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var array
+	 */
+	private $thrown = array(
+		'DeprecatedSniff'                 => false,
+		'FoundPropertyForDeprecatedSniff' => false,
+	);
+
+	/**
 	 * Groups of functions to restrict.
 	 *
 	 * Example: groups => array(
-	 * 	'lambda' => array(
-	 * 		'type'      => 'error' | 'warning',
-	 * 		'message'   => 'Use anonymous functions instead please!',
-	 * 		'functions' => array( 'eval', 'create_function' ),
-	 * 	)
+	 *  'lambda' => array(
+	 *      'type'      => 'error' | 'warning',
+	 *      'message'   => 'Use anonymous functions instead please!',
+	 *      'functions' => array( 'file_get_contents', 'create_function' ),
+	 *  )
 	 * )
 	 *
 	 * @return array
@@ -95,7 +116,37 @@ class WordPress_Sniffs_VIP_FileSystemWritesDisallowSniff extends WordPress_Abstr
 		}
 
 		return $groups;
+	}
 
-	} // End getGroups().
+	/**
+	 * Process the token and handle the deprecation notices.
+	 *
+	 * @since 1.0.0 Added to allow for throwing the deprecation notices.
+	 *
+	 * @param int $stackPtr The position of the current token in the stack.
+	 *
+	 * @return void|int
+	 */
+	public function process_token( $stackPtr ) {
+		if ( false === $this->thrown['DeprecatedSniff'] ) {
+			$this->thrown['DeprecatedSniff'] = $this->phpcsFile->addWarning(
+				'The "WordPress.VIP.FileSystemWritesDisallow" sniff has been deprecated. Please update your custom ruleset.',
+				0,
+				'DeprecatedSniff'
+			);
+		}
 
-} // End class.
+		if ( ( ! empty( $this->exclude ) || true !== $this->error )
+			&& false === $this->thrown['FoundPropertyForDeprecatedSniff']
+		) {
+			$this->thrown['FoundPropertyForDeprecatedSniff'] = $this->phpcsFile->addWarning(
+				'The "WordPress.VIP.FileSystemWritesDisallow" sniff has been deprecated. Please update your custom ruleset.',
+				0,
+				'FoundPropertyForDeprecatedSniff'
+			);
+		}
+
+		return parent::process_token( $stackPtr );
+	}
+
+}

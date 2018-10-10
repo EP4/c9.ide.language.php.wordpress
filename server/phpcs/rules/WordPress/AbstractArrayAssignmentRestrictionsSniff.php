@@ -7,6 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress;
+
+use WordPress\Sniff;
+
 /**
  * Restricts array assignment of certain keys.
  *
@@ -18,16 +22,20 @@
  *                 `WordPress_Sniffs_Arrays_ArrayAssignmentRestrictionsSniff` to
  *                 `WordPress_AbstractArrayAssignmentRestrictionsSniff`.
  */
-abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPress_Sniff {
+abstract class AbstractArrayAssignmentRestrictionsSniff extends Sniff {
 
 	/**
 	 * Exclude groups.
 	 *
 	 * Example: 'foo,bar'
 	 *
-	 * @var string Comma-delimited group list.
+	 * @since 0.3.0
+	 * @since 1.0.0 This property now expects to be passed an array.
+	 *              Previously a comma-delimited string was expected.
+	 *
+	 * @var array
 	 */
-	public $exclude = '';
+	public $exclude = array();
 
 	/**
 	 * Groups of variable data to check against.
@@ -48,18 +56,31 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 	protected $excluded_groups = array();
 
 	/**
+	 * Cache for the group information.
+	 *
+	 * @since 0.13.0
+	 *
+	 * @var array
+	 */
+	protected $groups_cache = array();
+
+	/**
 	 * Returns an array of tokens this test wants to listen for.
 	 *
 	 * @return array
 	 */
 	public function register() {
-		return array(
-			T_DOUBLE_ARROW,
-			T_CLOSE_SQUARE_BRACKET,
-			T_CONSTANT_ENCAPSED_STRING,
-			T_DOUBLE_QUOTED_STRING,
-		);
+		// Retrieve the groups only once and don't set up a listener if there are no groups.
+		if ( false === $this->setup_groups() ) {
+			return array();
+		}
 
+		return array(
+			\T_DOUBLE_ARROW,
+			\T_CLOSE_SQUARE_BRACKET,
+			\T_CONSTANT_ENCAPSED_STRING,
+			\T_DOUBLE_QUOTED_STRING,
+		);
 	}
 
 	/**
@@ -68,18 +89,39 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 	 * This method should be overridden in extending classes.
 	 *
 	 * Example: groups => array(
-	 * 	'wpdb' => array(
-	 * 		'type' => 'error' | 'warning',
-	 * 		'message' => 'Dont use this one please!',
-	 * 		'variables' => array( '$val', '$var' ),
-	 * 		'object_vars' => array( '$foo->bar', .. ),
-	 * 		'array_members' => array( '$foo['bar']', .. ),
-	 * 	)
+	 *  'groupname' => array(
+	 *      'type'     => 'error' | 'warning',
+	 *      'message'  => 'Dont use this one please!',
+	 *      'keys'     => array( 'key1', 'another_key' ),
+	 *      'callback' => array( 'class', 'method' ), // Optional.
+	 *  )
 	 * )
 	 *
 	 * @return array
 	 */
 	abstract public function getGroups();
+
+	/**
+	 * Cache the groups.
+	 *
+	 * @since 0.13.0
+	 *
+	 * @return bool True if the groups were setup. False if not.
+	 */
+	protected function setup_groups() {
+		$this->groups_cache = $this->getGroups();
+
+		if ( empty( $this->groups_cache ) && empty( self::$groups ) ) {
+			return false;
+		}
+
+		// Allow for adding extra unit tests.
+		if ( ! empty( self::$groups ) ) {
+			$this->groups_cache = array_merge( $this->groups_cache, self::$groups );
+		}
+
+		return true;
+	}
 
 	/**
 	 * Processes this test, when one of its tokens is encountered.
@@ -90,15 +132,8 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 	 */
 	public function process_token( $stackPtr ) {
 
-		$groups = $this->getGroups();
-
-		if ( empty( $groups ) ) {
-			$this->phpcsFile->removeTokenListener( $this, $this->register() );
-			return;
-		}
-
-		$this->excluded_groups = array_flip( explode( ',', $this->exclude ) );
-		if ( array_diff_key( $groups, $this->excluded_groups ) === array() ) {
+		$this->excluded_groups = $this->merge_custom_array( $this->exclude );
+		if ( array_diff_key( $this->groups_cache, $this->excluded_groups ) === array() ) {
 			// All groups have been excluded.
 			// Don't remove the listener as the exclude property can be changed inline.
 			return;
@@ -106,9 +141,9 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 
 		$token = $this->tokens[ $stackPtr ];
 
-		if ( in_array( $token['code'], array( T_CLOSE_SQUARE_BRACKET ), true ) ) {
-			$equal = $this->phpcsFile->findNext( T_WHITESPACE, ( $stackPtr + 1 ), null, true );
-			if ( T_EQUAL !== $this->tokens[ $equal ]['code'] ) {
+		if ( \T_CLOSE_SQUARE_BRACKET === $token['code'] ) {
+			$equal = $this->phpcsFile->findNext( \T_WHITESPACE, ( $stackPtr + 1 ), null, true );
+			if ( \T_EQUAL !== $this->tokens[ $equal ]['code'] ) {
 				return; // This is not an assignment!
 			}
 		}
@@ -117,26 +152,26 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 		$inst = array();
 
 		/*
-		   Covers:
-		   $foo = array( 'bar' => 'taz' );
-		   $foo['bar'] = $taz;
+		 * Covers:
+		 * $foo = array( 'bar' => 'taz' );
+		 * $foo['bar'] = $taz;
 		 */
-		if ( in_array( $token['code'], array( T_CLOSE_SQUARE_BRACKET, T_DOUBLE_ARROW ), true ) ) {
+		if ( \in_array( $token['code'], array( \T_CLOSE_SQUARE_BRACKET, \T_DOUBLE_ARROW ), true ) ) {
 			$operator = $stackPtr; // T_DOUBLE_ARROW.
-			if ( T_CLOSE_SQUARE_BRACKET === $token['code'] ) {
-				$operator = $this->phpcsFile->findNext( array( T_EQUAL ), ( $stackPtr + 1 ) );
+			if ( \T_CLOSE_SQUARE_BRACKET === $token['code'] ) {
+				$operator = $this->phpcsFile->findNext( \T_EQUAL, ( $stackPtr + 1 ) );
 			}
 
-			$keyIdx = $this->phpcsFile->findPrevious( array( T_WHITESPACE, T_CLOSE_SQUARE_BRACKET ), ( $operator - 1 ), null, true );
+			$keyIdx = $this->phpcsFile->findPrevious( array( \T_WHITESPACE, \T_CLOSE_SQUARE_BRACKET ), ( $operator - 1 ), null, true );
 			if ( ! is_numeric( $this->tokens[ $keyIdx ]['content'] ) ) {
 				$key            = $this->strip_quotes( $this->tokens[ $keyIdx ]['content'] );
-				$valStart       = $this->phpcsFile->findNext( array( T_WHITESPACE ), ( $operator + 1 ), null, true );
-				$valEnd         = $this->phpcsFile->findNext( array( T_COMMA, T_SEMICOLON ), ( $valStart + 1 ), null, false, null, true );
+				$valStart       = $this->phpcsFile->findNext( array( \T_WHITESPACE ), ( $operator + 1 ), null, true );
+				$valEnd         = $this->phpcsFile->findNext( array( \T_COMMA, \T_SEMICOLON ), ( $valStart + 1 ), null, false, null, true );
 				$val            = $this->phpcsFile->getTokensAsString( $valStart, ( $valEnd - $valStart ) );
 				$val            = $this->strip_quotes( $val );
 				$inst[ $key ][] = array( $val, $token['line'] );
 			}
-		} elseif ( in_array( $token['code'], array( T_CONSTANT_ENCAPSED_STRING, T_DOUBLE_QUOTED_STRING ), true ) ) {
+		} elseif ( \in_array( $token['code'], array( \T_CONSTANT_ENCAPSED_STRING, \T_DOUBLE_QUOTED_STRING ), true ) ) {
 			// $foo = 'bar=taz&other=thing';
 			if ( preg_match_all( '#(?:^|&)([a-z_]+)=([^&]*)#i', $this->strip_quotes( $token['content'] ), $matches ) <= 0 ) {
 				return; // No assignments here, nothing to check.
@@ -150,7 +185,7 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 			return;
 		}
 
-		foreach ( $groups as $groupName => $group ) {
+		foreach ( $this->groups_cache as $groupName => $group ) {
 
 			if ( isset( $this->excluded_groups[ $groupName ] ) ) {
 				continue;
@@ -162,11 +197,11 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 				foreach ( $assignments as $occurance ) {
 					list( $val, $line ) = $occurance;
 
-					if ( ! in_array( $key, $group['keys'], true ) ) {
+					if ( ! \in_array( $key, $group['keys'], true ) ) {
 						continue;
 					}
 
-					$output = call_user_func( $callback, $key, $val, $line, $group );
+					$output = \call_user_func( $callback, $key, $val, $line, $group );
 
 					if ( ! isset( $output ) || false === $output ) {
 						continue;
@@ -185,9 +220,8 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 					);
 				}
 			}
-		} // End foreach().
-
-	} // End process().
+		}
+	}
 
 	/**
 	 * Callback to process each confirmed key, to check value.
@@ -203,4 +237,4 @@ abstract class WordPress_AbstractArrayAssignmentRestrictionsSniff extends WordPr
 	 */
 	abstract public function callback( $key, $val, $line, $group );
 
-} // End class.
+}

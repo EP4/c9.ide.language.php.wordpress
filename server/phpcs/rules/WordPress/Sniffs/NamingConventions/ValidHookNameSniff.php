@@ -7,6 +7,10 @@
  * @license https://opensource.org/licenses/MIT MIT
  */
 
+namespace WordPress\Sniffs\NamingConventions;
+
+use WordPress\AbstractFunctionParameterSniff;
+
 /**
  * Use lowercase letters in action and filter names. Separate words via underscores.
  *
@@ -21,8 +25,9 @@
  *
  * @since   0.10.0
  * @since   0.11.0 Extends the WordPress_AbstractFunctionParameterSniff class.
+ * @since   0.13.0 Class name changed: this class is now namespaced.
  */
-class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_AbstractFunctionParameterSniff {
+class ValidHookNameSniff extends AbstractFunctionParameterSniff {
 
 	/**
 	 * Additional word separators.
@@ -66,7 +71,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 	 * @return array
 	 */
 	public function getGroups() {
-		$this->target_functions = WordPress_Sniff::$hookInvokeFunctions;
+		$this->target_functions = $this->hookInvokeFunctions;
 		return parent::getGroups();
 	}
 
@@ -92,7 +97,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 			return;
 		}
 
-		$regex  = $this->prepare_regex();
+		$regex = $this->prepare_regex();
 
 		$case_errors = 0;
 		$underscores = 0;
@@ -103,14 +108,14 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 			$content[ $i ]  = $this->tokens[ $i ]['content'];
 			$expected[ $i ] = $this->tokens[ $i ]['content'];
 
-			if ( in_array( $this->tokens[ $i ]['code'], array( T_CONSTANT_ENCAPSED_STRING, T_DOUBLE_QUOTED_STRING ), true ) ) {
+			if ( \in_array( $this->tokens[ $i ]['code'], array( \T_CONSTANT_ENCAPSED_STRING, \T_DOUBLE_QUOTED_STRING ), true ) ) {
 				$string = $this->strip_quotes( $this->tokens[ $i ]['content'] );
 
 				/*
-				   Here be dragons - a double quoted string can contain extrapolated variables
-				   which don't have to comply with these rules.
+				 * Here be dragons - a double quoted string can contain extrapolated variables
+				 * which don't have to comply with these rules.
 				 */
-				if ( T_DOUBLE_QUOTED_STRING === $this->tokens[ $i ]['code'] ) {
+				if ( \T_DOUBLE_QUOTED_STRING === $this->tokens[ $i ]['code'] ) {
 					$transform       = $this->transform_complex_string( $string, $regex );
 					$case_transform  = $this->transform_complex_string( $string, $regex, 'case' );
 					$punct_transform = $this->transform_complex_string( $string, $regex, 'punctuation' );
@@ -124,7 +129,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 					continue;
 				}
 
-				if ( T_DOUBLE_QUOTED_STRING === $this->tokens[ $i ]['code'] ) {
+				if ( \T_DOUBLE_QUOTED_STRING === $this->tokens[ $i ]['code'] ) {
 					$expected[ $i ] = '"' . $transform . '"';
 				} else {
 					$expected[ $i ] = '\'' . $transform . '\'';
@@ -137,7 +142,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 					$underscores++;
 				}
 			}
-		} // End for().
+		}
 
 		$data = array(
 			implode( '', $expected ),
@@ -152,8 +157,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 			$error = 'Words in hook names should be separated using underscores. Expected: %s, but found: %s.';
 			$this->phpcsFile->addWarning( $error, $stackPtr, 'UseUnderscores', $data );
 		}
-
-	} // End process().
+	}
 
 	/**
 	 * Prepare the punctuation regular expression.
@@ -166,13 +170,12 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 	 */
 	protected function prepare_regex() {
 		$extra = '';
-		if ( '' !== $this->additionalWordDelimiters && is_string( $this->additionalWordDelimiters ) ) {
+		if ( '' !== $this->additionalWordDelimiters && \is_string( $this->additionalWordDelimiters ) ) {
 			$extra = preg_quote( $this->additionalWordDelimiters, '`' );
 		}
 
 		return sprintf( $this->punctuation_regex, $extra );
-
-	} // End prepare_regex().
+	}
 
 	/**
 	 * Transform an arbitrary string to lowercase and replace punctuation and spaces with underscores.
@@ -196,7 +199,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 			default:
 				return preg_replace( $regex, '_', strtolower( $string ) );
 		}
-	} // End transform().
+	}
 
 	/**
 	 * Transform a complex string which may contain variable extrapolation.
@@ -208,14 +211,14 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 	 * @return string
 	 */
 	protected function transform_complex_string( $string, $regex, $transform_type = 'full' ) {
-		$output = preg_split( '`([\{\}\$\[\] ])`', $string, -1, PREG_SPLIT_DELIM_CAPTURE );
+		$output = preg_split( '`([\{\}\$\[\] ])`', $string, -1, \PREG_SPLIT_DELIM_CAPTURE );
 
 		$is_variable = false;
 		$has_braces  = false;
 		$braces      = 0;
 
 		foreach ( $output as $i => $part ) {
-			if ( in_array( $part, array( '$', '{' ), true ) ) {
+			if ( \in_array( $part, array( '$', '{' ), true ) ) {
 				$is_variable = true;
 				if ( '{' === $part ) {
 					$has_braces = true;
@@ -229,7 +232,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 					$has_braces = true;
 					$braces++;
 				}
-				if ( in_array( $part, array( '}', ']' ), true ) ) {
+				if ( \in_array( $part, array( '}', ']' ), true ) ) {
 					$braces--;
 				}
 				if ( false === $has_braces && ' ' === $part ) {
@@ -237,7 +240,7 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 					$output[ $i ] = $this->transform( $part, $regex, $transform_type );
 				}
 
-				if ( ( true === $has_braces && 0 === $braces ) && false === in_array( $output[ ( $i + 1 ) ], array( '{', '[' ), true ) ) {
+				if ( ( true === $has_braces && 0 === $braces ) && false === \in_array( $output[ ( $i + 1 ) ], array( '{', '[' ), true ) ) {
 					$has_braces  = false;
 					$is_variable = false;
 				}
@@ -248,6 +251,6 @@ class WordPress_Sniffs_NamingConventions_ValidHookNameSniff extends WordPress_Ab
 		}
 
 		return implode( '', $output );
-	} // End transform_complex_string().
+	}
 
-} // End class.
+}

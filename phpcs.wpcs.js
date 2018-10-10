@@ -1,5 +1,6 @@
+// @see https://cloud9-sdk.readme.io/docs/language-handlers
 define(function(require, exports, module) {
-    main.consumes = ["Plugin", "language","ui"];
+    main.consumes = ["Plugin", "language", "ui"];
     main.provides = ["phpcs.wpcs"];
     return main;
 
