@@ -17,5 +17,5 @@
     "phpcs.wpcs": {}
   },
   "categories": ["miscellaneous"],
-  "licenses": ["GPLv3 or later"]
+  "license": "SEE LICENSE IN LICENSE"
 }

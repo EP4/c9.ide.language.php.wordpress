@@ -19,22 +19,24 @@ Installation
 
 2. Open a Terminal from the menu __Window__ -> __New Terminal__.
 
-3. Run these commands in the terminal:
- ```
+3. Run these commands in the terminal for each project where you want to use the plugin:
+ ```bash
  git clone git@github.com:EP4-Corporation/c9.ide.language.php.wordpress.git
  cd c9.ide.language.php.wordpress
  c9 install .
  cd ..
  rm -fR c9.ide.language.php.wordpress
  ```
+4. If you don't want to activate the plugin manually every time you open your Cloud9 project, you can enable it automatically. Click on the __Cloud9__ menu, select __Open Your Init Script__ and add the following code:
+```javascript
+services.pluginManager.loadPackage([
+    "~/.c9/plugins/c9.ide.language.php.wordpress/package.json" 
+])
+```
 
-4. Restart Cloud9 in Debug Mode by appending the __debug=2__ parameter to the URL. For example, if your workspace is accessible at https://ide.c9.io/username/workspace_name, you can enable the debug mode from https://ide.c9.io/username/workspace_name?debug=2 . You can also enable the debug mode simply from the menu __Tools__ -> __Developer__ -> __Start in Debug Mode__.
- ```diff
- - Please note the following - 
- ```
- There is currently no way to install custom plugins to Cloud9 other than using the debug mode, since the Cloud9 API doesn't allow publishing new packages at the moment. See <https://community.c9.io/t/unable-to-publish-c9-package/6235>.
+5. Restart Cloud9. 
 
-5. Use Cloud9 as usual, and warnings will be displayed in the IDE when working on PHP files if PHP CodeSniffer detects any error based on PHPCompatibility & WordPress Coding Standards rules.
+6. Use Cloud9 as usual, and warnings will be displayed in the IDE when working on PHP files if PHP CodeSniffer detects any error based on PHPCompatibilityWP & WordPress Coding Standards rules.
 
 Usage
 -----
@@ -44,13 +46,17 @@ This plugin will display errors found by PHPCS directly in the IDE, as you can s
 
 This plugin will do the following:
 
-* Run PHPCS on the current PHP file using WordPress Coding Standards and PHPCompatibility rules.
-* If errors are found, a warning icon will be displayed next to the line number.
-* When hovering that icon, a tooltip explaining the error will be displayed.
-* In the message, icons will be displayed for helping you distinguish if this is a warning or an error, and if it can be fixed automatically by PHPCBF.
-* In the message, the line and column where the error can be found in the code will be displayed inside parenthesis.
-* In the code, errors will be underlined with a red dotted line, and highlighted in red so you can rapidly identify them. Please note that the highlighted characters might not actually be accurate.
-* Since the plugin can only run in debug mode and since a green debug bar is always displayed at the top of the screen when in debug mode, the plugin is also loading a CSS stylesheet in order to hide that annoying debug bar.
+- [x] Run PHPCS on the current PHP file using WordPress Coding Standards and PHPCompatibility rules.
+- [x] If errors are found, a warning icon will be displayed next to the line number.
+- [x] When hovering that icon, a tooltip with a message explaining the error(s) will be displayed.
+- [x] In the message, icons will be displayed for helping you distinguish if this is a warning or an error, and if it can be fixed automatically by PHPCBF.
+- [x] In the message, the line and column where the error can be found in the code will be displayed inside parenthesis.
+- [x] In the code, errors will be underlined with a red dotted line, and highlighted in red so you can rapidly identify them. Please note that the highlighted characters might not actually be accurate.
+
+This plugin won't do the following (yet):
+- [ ] Run PHPCBF and fix issues automatically. You'll have to run PHPCBF from the Terminal, or fix issues manually based on the recommendations given.
+- [ ] Allow the user to enable or disable specific standards and rules. You'll need to manually edit the settings of the plugin in the __phpcs_handler.js__ file which can be found in the __worker__ directory.
+- [ ] Update itself automatically. At the moment, all rules must be updated manually. I'll update this plugin once in a while with the most recent rules available.
 
 ### Icons used in messages
 
@@ -60,7 +66,7 @@ Since there is no simple way to allow HTML in these tooltips, we use some custom
 | ---------------------| --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 🔴 Red Circle        | The identified issue is considered to be an __error__ by PHPCS.                                                                                           |
 | 🔶 Yellow Diamond    | The identified issue is considered to be a __warning__ by PHPCS.                                                                                          |
-| ✔ Checkmark         | The issue can be __resolved automatically by running PHPCBF__. Please note that the plugin doesn't run PHPCBF (and doesn't actually fix any issue).       |
+| ✔ Checkmark         | The issue can be __resolved automatically by running PHPCBF__.                                                                                            |
 | 𝗪𝗣𝗖𝗦                | The issue was identified using __WordPress__ Coding Standards Rules.                                                                                      |
 | 𝗣𝗛𝗣𝗖𝗼𝗺𝗽𝗮𝘁𝗶𝗯𝗶𝗹𝗶𝘁𝘆     | The issue was identified using __PHPCompatibility__ Rules.                                                                                                |
 | ➀ to ➈              | Any number displayed in a circle represent the __severity__ level of the issue. ➄ is the default severity and is never displayed.                         |  
