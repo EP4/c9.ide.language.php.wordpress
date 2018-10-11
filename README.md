@@ -1,15 +1,15 @@
 c9.ide.language.php.wordpress
 =============================
 
-__Name__ : WordPress Coding Standards Linter for Cloud9 
+__Name__: WordPress Coding Standards Linter for Cloud9 
 
 __Current Version__: 1.0.0 (2018-10-10)
 
-__Author__ : [EP4](https://ep4.com)
+__Author__: [EP4](https://ep4.com)
 
-__Contributors__ : [Dave Lavoie](https://github.com/davelavoie)
+__Contributors__: [Dave Lavoie](https://github.com/davelavoie)
 
-__License__ : GPLv3 or later
+__License__: GPLv3 or later
 
 Provides a linter in Cloud9 IDE for WordPress development using PHP CodeSniffer (PHPCS) based on WordPress Coding Standards (WPCS) and PHPCompatibility/PHPCompabitityWP rules.
 
@@ -50,7 +50,7 @@ This plugin will do the following:
 - [x] If errors are found, a warning icon will be displayed next to the line number.
 - [x] When hovering that icon, a tooltip with a message explaining the error(s) will be displayed.
 - [x] In the message, icons will be displayed for helping you distinguish if this is a warning or an error, and if it can be fixed automatically by PHPCBF.
-- [x] In the message, the line and column where the error can be found in the code will be displayed inside parenthesis.
+- [x] In the message, the line and column where the error can be found in the code will be displayed inside parentheses.
 - [x] In the code, errors will be underlined with a red dotted line, and highlighted in red so you can rapidly identify them. Please note that the highlighted characters might not actually be accurate.
 
 This plugin won't do the following (yet):
@@ -60,7 +60,7 @@ This plugin won't do the following (yet):
 
 ### Icons used in messages
 
-Since there is no simple way to allow HTML in these tooltips, we use some custom unicode characters for displaying more meaningful messages:
+Since there is no simple way to allow HTML in these tooltips, we use some custom Unicode characters for displaying more meaningful messages:
 
 | Displayed Characters | Meaning                                                                                                                                                   |
 | ---------------------| --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -70,9 +70,9 @@ Since there is no simple way to allow HTML in these tooltips, we use some custom
 | 𝗪𝗣𝗖𝗦                | The issue was identified using __WordPress__ Coding Standards Rules.                                                                                      |
 | 𝗣𝗛𝗣𝗖𝗼𝗺𝗽𝗮𝘁𝗶𝗯𝗶𝗹𝗶𝘁𝘆     | The issue was identified using __PHPCompatibility__ Rules.                                                                                                |
 | ➀ to ➈              | Any number displayed in a circle represent the __severity__ level of the issue. ➄ is the default severity and is never displayed.                         |  
-| (𝟏𝟐𝟑:𝟕𝟖𝟗)             | Numbers displayed inside parenthesis refer to the __line__ and __column__ where the issue can be found. In this example, look at line 123 and column 789. |
+| (𝟏𝟐𝟑:𝟕𝟖𝟗)             | Numbers displayed inside parentheses refer to the __line__ and __column__ where the issue can be found. In this example, look at line 123 and column 789. |
 
-Ressources
+Resources
 ----------
 
 * PHP CodeSniffer : [GitHub Repo](https://github.com/squizlabs/PHP_CodeSniffer), [Wiki](https://github.com/squizlabs/PHP_CodeSniffer/wiki) & [Analysis of Coding Conventions for WP](https://squizlabs.github.io/PHP_CodeSniffer/analysis/WordPress/WordPress/index.html)
@@ -88,7 +88,7 @@ Changelog
 
 * Updating PHP_CodeSniffer library to version 3.3.2.
 * Updating WordPress Coding Standards to version 1.1.0.
-* Updading PHPCompabitity standards to version 9.0.0.
+* Updating PHPCompabitity standards to version 9.0.0.
 * Adding PHPCompabitityWP 2.0.0 and PHPCompatibilityParagonie 1.0.0 standards.
 * Increasing the stdout max output from 200KB to 500KB.
 * Increasing the timeout from 5 to 10 seconds.
@@ -101,7 +101,7 @@ Changelog
 ### 0.0.2a - 2017-02-13
 
 * Updating WordPress Coding Standards with the latest release as of 2017-02-10.
-* Updading PHPCompabitity standards with the latest release as of 2017-02-06
+* Updating PHPCompabitity standards with the latest release as of 2017-02-06
 
 ### 0.0.1 (alpha) - 2017-02-10
 
