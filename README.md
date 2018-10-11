@@ -21,7 +21,7 @@ Installation
 
 3. Run these commands in the terminal for each project where you want to use the plugin:
  ```bash
- git clone git@github.com:EP4-Corporation/c9.ide.language.php.wordpress.git
+ git clone git@github.com:EP4/c9.ide.language.php.wordpress.git
  cd c9.ide.language.php.wordpress
  c9 install .
  cd ..
