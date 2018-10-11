@@ -39,7 +39,7 @@ define(function(require, exports, module) {
                 "--runtime-set", "report_width", "auto",
                 "--runtime-set", "testVersion", "5.2-",
             //  "--runtime-set", "severity", "0",
-                "--tab-width=0",
+            //  "--tab-width=4",
                 "--standard=WordPress-Extra,WordPress-Docs,PHPCompatibilityWP"
             ],
         };

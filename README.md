@@ -3,7 +3,7 @@ c9.ide.language.php.wordpress
 
 __Name__: WordPress Coding Standards Linter for Cloud9 
 
-__Current Version__: 1.0.0 (2018-10-10)
+__Current Version__: 1.0.1 (2018-10-11)
 
 __Author__: [EP4](https://ep4.com)
 
@@ -83,6 +83,11 @@ Resources
 
 Changelog
 ---------
+
+### 1.0.1 - 2018-10-11
+
+* Removing the ``tab-width=0`` parameter since the tab-width is already set by WordPress rules and it was now triggering false positives.
+* Fixing some typos in the README.md file.
 
 ### 1.0.0 - 2018-10-10
 
